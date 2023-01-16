@@ -54,29 +54,41 @@ exports.update = async (req, res, next) => {
         })
     }
 
-    try {
-        const cariPerjadin = await Perjadin.findOne(data);
-        const Perjadin = Object.assign(cariPerjadin, req.body);
+    await Perjadin.findOne(data)
+        .then(result => {
+            // console.log("id: ", id)
+            // console.log("result: ", result)
 
-        Perjadin.save().then(result => {
-            res.status(200).json({
-                message: "Update Data Success",
-                data: result
-            });
-        }).catch(err => {
-            console.log("err: ", err);
-            res.status(400).json({
-                message: "invalid value",
+            if (result) {
+                const Perjadin = Object.assign(result, req.body);
+                Perjadin.save().then(result => {
+                    res.status(200).json({
+                        message: "Update Data Success",
+                        data: result
+                    });
+                }).catch(err => {
+                    console.log("err: ", err);
+                    res.status(400).json({
+                        message: "invalid value",
+                        eror: err
+                    });
+                });
+
+            } else {
+                return res.status(400).json({
+                    message: "data not found",
+                    data: null,
+                })
+            }
+        })
+        .catch(err => {
+            return res.status(404).json({
+                message: "data with id = '" + err.value + "' not found",
                 eror: err
             });
-        });
+            next();
+        })
 
-    } catch {
-        return res.status(404).json({
-            message: "data " + req.body._id + " not found",
-            eror: "not found"
-        });
-    }
 
 }
 exports.insert = async (req, res, next) => {
