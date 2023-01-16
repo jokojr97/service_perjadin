@@ -1,49 +1,45 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-const Pegawai = new Schema({
-    name: {
+const Perjadin = new Schema({
+    perihal: {
         type: String,
         require: true
     },
-    email: {
+    lokasi: {
         type: String,
         require: true
     },
-    password: {
+    alamat: {
         type: String,
         require: true
     },
-    nip: {
-        type: String,
+    tanggal_berangkat: {
+        type: Date,
         require: true
     },
-    instansi: {
-        type: String,
-        require: true
-    },
-    jabatan: {
-        type: String,
-        require: true
-    },
-    bidang: {
-        type: String,
-        require: true
-    },
-    golongan: {
-        type: String,
+    tanggal_kembali: {
+        type: Date,
         require: true
     },
     image: {
         type: String,
+        require: false
+    },
+    tahun: {
+        type: String,
         require: true
     },
-    level: {
-        type: Object,
+    jenis_perjadin: {
+        type: String,
         require: true
+    },
+    author: {
+        type: Object,
+        require: false
     }
 }, {
     timestamps: true
 });
 
-module.exports = mongoose.model('Pegawai', Pegawai)
+module.exports = mongoose.model('Perjadin', Perjadin)

@@ -5,8 +5,8 @@ const bcrypt = require('bcrypt');
 
 const saltRounds = 10;
 
-const Pegawai = require('../models/pegawai');
-// const pegawai = require('../models/pegawai');
+const Perjadin = require('../models/perjadin');
+// const Perjadin = require('../models/Perjadin');
 
 exports.delete = async (req, res, next) => {
     const id = req.params.id || 0;
@@ -23,15 +23,15 @@ exports.delete = async (req, res, next) => {
     }
 
     try {
-        const pegawai = await Pegawai.findOne(data);
-        await pegawai.remove();
+        const perjadin = await Perjadin.findOne(data);
+        await perjadin.remove();
         return res.status(200).json({
             message: "Data dengan id= " + id + " berhasil di hapus",
             data: true
         });
     } catch {
         return res.status(404).json({
-            message: "data Pegawai not found",
+            message: "data Perjadin not found",
             eror: "not found"
         });
     }
@@ -55,10 +55,10 @@ exports.update = async (req, res, next) => {
     }
 
     try {
-        const cariPegawai = await Pegawai.findOne(data);
-        const pegawai = Object.assign(cariPegawai, req.body);
+        const cariPerjadin = await Perjadin.findOne(data);
+        const Perjadin = Object.assign(cariPerjadin, req.body);
 
-        pegawai.save().then(result => {
+        Perjadin.save().then(result => {
             res.status(200).json({
                 message: "Update Data Success",
                 data: result
@@ -73,7 +73,7 @@ exports.update = async (req, res, next) => {
 
     } catch {
         return res.status(404).json({
-            message: "data not found",
+            message: "data " + req.body._id + " not found",
             eror: "not found"
         });
     }
@@ -82,20 +82,6 @@ exports.update = async (req, res, next) => {
 exports.insert = async (req, res, next) => {
     // inisiasi error validasi
     const errors = validationResult(req);
-
-    const data = {
-        email: req.body.email
-    }
-    //cek email pegawai sudah terdaftar
-    const cariPegawai = await Pegawai.findOne(data)
-    // console.log(caripegawai)
-    if (cariPegawai != null) {
-        return res.status(400).json({
-            message: "Email sudah terdaftar! coba pakai email lain",
-            data: cariPegawai
-        })
-        next()
-    }
 
     // cek error validasi
     if (!errors.isEmpty()) {
@@ -110,40 +96,36 @@ exports.insert = async (req, res, next) => {
     }
 
     // definisi input
-    const name = req.body.name;
-    const email = req.body.email;
-    const password = req.body.password;
-    const nip = req.body.nip;
-    const instansi = req.body.instansi;
-    const jabatan = req.body.jabatan;
-    const bidang = req.body.bidang;
-    const golongan = req.body.golongan;
+    const perihal = req.body.perihal;
+    const lokasi = req.body.lokasi;
+    const alamat = req.body.alamat;
+    const tanggal_berangkat = req.body.tanggal_berangkat;
+    const tanggal_kembali = req.body.tanggal_kembali;
+    const tahun = req.body.tahun;
+    const jenis_perjadin = req.body.jenis_perjadin;
+    // const author = req.body.golongan;
 
-    // hashing password
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
     const image = "user.jpg"
 
-    const insertPegawai = new Pegawai({
-        name: name,
-        email: email,
-        password: hashedPassword,
-        nip: nip,
-        instansi: instansi,
-        jabatan: jabatan,
-        bidang: bidang,
-        golongan: golongan,
+    const insertPerjadin = new Perjadin({
+        perihal: perihal,
+        lokasi: lokasi,
+        alamat: alamat,
+        tanggal_berangkat: tanggal_berangkat,
+        tanggal_kembali: tanggal_kembali,
+        tahun: tahun,
+        jenis_perjadin: jenis_perjadin,
         image: image,
-        level: {
+        author: {
             id: 1,
             level: "admin"
         },
     });
 
-    insertPegawai.save()
+    insertPerjadin.save()
         .then(result => {
             res.status(201).json({
-                message: "Register Success",
+                message: "Input Perjalanan Dinas Success",
                 data: result
             });
         }).catch(err => {
@@ -162,10 +144,10 @@ exports.getAll = (req, res, next) => {
     const currentPageInt = parseInt(currentPage);
     const perPageInt = parseInt(perPage);
 
-    Pegawai.find().countDocuments()
+    Perjadin.find().countDocuments()
         .then(count => {
             totalItem = count;
-            return Pegawai.find().skip((currentPageInt - 1) * perPageInt).limit(perPageInt)
+            return Perjadin.find().skip((currentPageInt - 1) * perPageInt).limit(perPageInt)
         })
         .then(result => {
             if (totalItem == 0) {
@@ -206,7 +188,7 @@ exports.getById = async (req, res, next) => {
         _id: id
     }
 
-    await Pegawai.findOne(data)
+    await Perjadin.findOne(data)
         .then(result => {
             // console.log("id: ", id)
             // console.log("result: ", result)
