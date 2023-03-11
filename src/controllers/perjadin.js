@@ -149,7 +149,30 @@ exports.insert = async (req, res, next) => {
         });
 }
 
+const getsort = (sort, sortvalue) => {
+    if (sort == "perihal") {
+        return { perihal: sortvalue }
+    } else if (sort == "lokasi") {
+        return { lokasi: sortvalue }
+    } else if (sort == "berangkat") {
+        return { berangkat: sortvalue }
+    } else if (sort == "lama perjalanan") {
+        return { lama_perjalanan: sortvalue }
+    } else if (sort == "jenis perjalanan") {
+        return { jenis_perjalanan: sortvalue }
+    } else if (sort == "jenis perjalanan") {
+        return { jenis_erjalanan: sortvalue }
+    } else if (sort == "tahun") {
+        return { tahun: sortvalue }
+    }
+}
+
+
 exports.getAll = (req, res, next) => {
+    const search = req.query.search || '';
+    const sort = req.query.sort || 'createdAt';
+    const sortval = req.query.sortval || 'desc';
+    const srt = getsort(sort, sortval)
     const currentPage = req.query.page || 1;
     const perPage = req.query.perPage || 5;
     let totalItem;

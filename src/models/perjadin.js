@@ -2,6 +2,10 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const Perjadin = new Schema({
+    nomor_sppd: {
+        type: String,
+        require: false
+    },
     perihal: {
         type: String,
         require: true
@@ -13,6 +17,10 @@ const Perjadin = new Schema({
     alamat: {
         type: String,
         require: true
+    },
+    lama_perjalanan: {
+        type: String,
+        require: false
     },
     tanggal_berangkat: {
         type: Date,
